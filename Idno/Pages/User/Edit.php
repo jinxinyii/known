@@ -16,22 +16,24 @@ namespace Idno\Pages\User {
 
         function getContent()
         {
+            $user = null;
             if (!empty($this->arguments[0])) {
                 $user = \Idno\Entities\User::getByHandle($this->arguments[0]);
             }
-            if (empty($user)) { $this->forward(); // TODO: 404
+            if (empty($user)) {
+                $this->forward(); // Forward to 404 page if user is not found
+                return;
             }
             if (!$user->canEdit()) {
-                $this->deniedContent();
+                $this->deniedContent(); // Deny access if user cannot edit
+                return;
             }
 
             $t = \Idno\Core\Idno::site()->template();
             $t->__(
                 array(
-
-                'title' => \Idno\Core\Idno::site()->language()->_('Edit profile: %s', [$user->getTitle()]),
-                'body'  => $t->__(array('user' => $user))->draw('entity/User/edit')
-
+                    'title' => \Idno\Core\Idno::site()->language()->_('Edit profile: %s', [$user->getTitle()]),
+                    'body'  => $t->__(array('user' => $user))->draw('entity/User/edit')
                 )
             )->drawPage();
         }
