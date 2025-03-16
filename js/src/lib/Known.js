@@ -1,5 +1,3 @@
-
-
 /*
  * Shim so that JS functions can get the current site URL
  * @deprecated Use known.config.displayUrl
@@ -17,9 +15,9 @@ function wwwroot() {
 function isLoggedIn() {
     //Logger.deprecated("isLoggedIn() is deprecated, use known.session.loggedin");
     if (typeof known !== 'undefined')
-	if (known.session.loggedIn) {
-	    return true;
-	}
+        if (known.session.loggedIn) {
+            return true;
+        }
     return false;
 }
 
@@ -30,11 +28,15 @@ $(document).ready(function () {
     var url = $('#soft-forward').attr('href');
 
     if (!!url) {
-	window.location = url;
+        window.location = url;
     }
     
     if (known.session.loggedIn) {
-	//TODO(ben) re-enable in a smarter way
-	//Notifications.enable(true);
+        // Check if Notifications object and enable function exist before calling it
+        if (typeof Notifications !== 'undefined' && typeof Notifications.enable === 'function') {
+            Notifications.enable(true);
+        } else {
+            console.warn('Notifications object or enable method is not available.');
+        }
     }
 });
