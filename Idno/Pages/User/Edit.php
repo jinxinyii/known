@@ -32,7 +32,7 @@ namespace Idno\Pages\User {
             $t = \Idno\Core\Idno::site()->template();
             $t->__(
                 array(
-                    'title' => \Idno\Core\Idno::site()->language()->_('Edit profile: %s', [$user->getTitle()]),
+                    'title' => \Idno\Core\Idno::site()->language()->_(\Idno\Core\Idno::site()->language()->_('Edit profile: %s'), [$user->getTitle()]),
                     'body'  => $t->__(array('user' => $user))->draw('entity/User/edit')
                 )
             )->drawPage();

@@ -21,16 +21,17 @@ namespace Idno\Pages\Entity {
             if (!empty($this->arguments[0])) {
                 $object = \Idno\Common\Entity::getByID($this->arguments[0]);
             }
-            if (empty($object)) { $this->forward(); // TODO: 404
+            if (empty($object)) {
+                Idno::site()->session()->addMessage(\Idno\Core\Idno::site()->language()->_("We couldn't find the post."));
+                $this->forward(Idno::site()->config()->getDisplayURL()); // Redirect to homepage or a 404 page
+                return;
             }
 
             $t = \Idno\Core\Idno::site()->template();
             $t->__(
                 array(
-
-                'title' => $object->getTitle(),
-                'body'  => $object->draw()
-
+                    'title' => $object->getTitle(),
+                    'body'  => $object->draw()
                 )
             )->drawPage();
         }
@@ -46,10 +47,12 @@ namespace Idno\Pages\Entity {
             }
             if (empty($object)) {
                 Idno::site()->session()->addMessage(\Idno\Core\Idno::site()->language()->_("We couldn't find the post to delete."));
-                $this->forward();
-            } // TODO: 404
+                $this->forward(Idno::site()->config()->getDisplayURL()); // Redirect to homepage or a 404 page
+                return;
+            }
             if (!$object->canEdit()) {
                 $this->deniedContent();
+                return;
             }
 
             if ($object->delete()) {
